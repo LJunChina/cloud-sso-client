@@ -4,7 +4,7 @@ buildscript {
 	}
 	repositories {
 		maven {
-			url 'http://localhost:8080/nexus/content/groups/public/'
+			url 'http://115.159.152.121:8080/nexus/content/groups/public/'
 		}
 	}
 	dependencies {
@@ -14,6 +14,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 
 group = 'com.cloud'
@@ -22,7 +23,7 @@ sourceCompatibility = 1.8
 
 repositories {
 	maven {
-		url 'http://localhost:8080/nexus/content/groups/public/'
+		url 'http://115.159.152.121:8080/nexus/content/groups/public/'
 	}
 }
 
@@ -32,16 +33,49 @@ ext {
 }
 
 dependencies {
-	compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.cloud:common:1.0-SNAPSHOT')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
+}
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			pom.groupId = "com.cloud"
+			pom.version = "1.0-SNAPSHOT"
+			pom.artifactId = "cloud-sso-client"
+			pom.project {
+				name project.name
+				packaging 'jar'
+				description 'sso接入客户端'
+				developers {
+					developer {
+						id 'cloud'
+						name 'JonChina'
+					}
+				}
+			}
+			repository(url: "http://115.159.152.121:8080/nexus/content/repositories/thirdparty/") {
+				authentication(userName: "admin", password: "admin123")
+			}
+		}
+	}
+}
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
 }
 
 
