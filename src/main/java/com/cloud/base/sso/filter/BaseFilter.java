@@ -19,7 +19,7 @@ import java.util.Set;
  * @author Jon_China
  * @create 2018/1/13
  */
-public class BaseFilter implements Filter {
+public abstract class BaseFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseFilter.class);
 
@@ -37,14 +37,6 @@ public class BaseFilter implements Filter {
             excludeUrl = new HashSet<>(Arrays.asList(excludeUrlStr.split(",")));
         }
         redirectUrl = urlConfig.getDomain() + "?redirectUrl=" + urlConfig.getAppUrl() + "&appName=" + urlConfig.getAppName() + "";
-    }
-
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-    }
-
-    @Override
-    public void destroy() {
     }
 
     /**
