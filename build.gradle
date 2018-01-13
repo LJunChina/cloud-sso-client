@@ -70,7 +70,7 @@ uploadArchives {
 }
 task sourcesJar(type: Jar) {
     classifier = 'sources'
-    from sourceSets.main.allSource
+    from 'src/main/java'
 }
 
 artifacts {
