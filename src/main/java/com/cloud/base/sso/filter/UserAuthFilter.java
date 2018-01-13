@@ -103,6 +103,5 @@ public class UserAuthFilter extends BaseFilter {
 
     @Override
     public void destroy() {
-        super.destroy();
     }
 }
