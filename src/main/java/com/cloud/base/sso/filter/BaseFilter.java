@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +38,11 @@ public abstract class BaseFilter implements Filter {
         if(EmptyChecker.notEmpty(excludeUrlStr)){
             excludeUrl = new HashSet<>(Arrays.asList(excludeUrlStr.split(",")));
         }
-        redirectUrl = urlConfig.getDomain() + "?redirectUrl=" + urlConfig.getAppUrl() + "&appName=" + urlConfig.getAppName() + "";
+        try {
+            redirectUrl = urlConfig.getDomain() + "?redirectUrl=" + URLEncoder.encode(urlConfig.getAppUrl(),"UTF-8") + "&appName=" + urlConfig.getAppName() + "";
+        }catch (UnsupportedEncodingException e){
+            logger.error("encode not supported");
+        }
     }
 
     /**
