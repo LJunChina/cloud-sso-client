@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.stream.Stream;
 
 /**
@@ -96,6 +97,10 @@ public class UserAuthInterceptor extends BaseInterceptor {
         }catch (UserAuthException e){
             logger.error("exception of login occurred in interceptor:{}",e);
             response.getWriter().write(new BaseRespDTO(ResultCode.INVALID_USER).toString());
+            return false;
+        }catch (UnsupportedEncodingException e){
+            logger.error("not support encode");
+            response.getWriter().write(new BaseRespDTO(ResultCode.NOT_SUPPORT_ENCODE).toString());
             return false;
         }catch (Exception e){
             logger.error("exception occurred in interceptor:{}",e);

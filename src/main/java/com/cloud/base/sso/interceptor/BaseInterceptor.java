@@ -8,6 +8,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * 拦截器基类
@@ -24,8 +26,8 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
 
     protected String redirectUrl;
 
-    protected void init(){
-        redirectUrl = urlConfig.getDomain() + "?redirectUrl=" + urlConfig.getAppUrl() + "&appName=" + urlConfig.getAppName() + "";
+    protected void init() throws UnsupportedEncodingException{
+        redirectUrl = urlConfig.getDomain() + "?redirectUrl=" + URLEncoder.encode(urlConfig.getAppUrl(),"UTF-8") + "&appName=" + urlConfig.getAppName() + "";
     }
 
     /**
