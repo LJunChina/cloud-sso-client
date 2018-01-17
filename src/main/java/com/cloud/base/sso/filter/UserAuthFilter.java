@@ -72,29 +72,31 @@ public class UserAuthFilter extends BaseFilter {
             }
             //查询token是否有效
             String result = this.tokenService.checkLoginToken(tokenId);
+            logger.debug("token result : {}",result);
             JSONObject object = JSONObject.parseObject(result);
-            if(ResultCode.OK.getCode().equals(object.getString("code"))){
-                logger.info("token result : {}",result);
-                TokenInfo tokenInfo = JSONObject.parseObject(object.getString("data"),TokenInfo.class);
-                //查询用户信息
-                String userStr = this.tokenService.getLoginUserInfo(tokenInfo.getUserId());
-                JSONObject userObject = JSONObject.parseObject(userStr);
-                String tokenStr = userObject.getJSONObject("data").getString("loginToken");
-                if(!tokenStr.equals(tokenId)){
-                    redirect(response,isAjax,jsonResult);
-                    return;
-                }
-                //排除配置不包含的
-                //查询权限信息
-                String privilegeCheck = this.tokenService.checkLoginUserPrivilege(tokenInfo.getUserId(),"1",request.getRequestURI());
-                BaseRespDTO resultCheck = JSONObject.parseObject(privilegeCheck,BaseRespDTO.class);
-                if(EmptyChecker.isEmpty(resultCheck) || !ResultCode.OK.getCode().equals(resultCheck.getCode())){
-                    redirect(response,isAjax,privilegeCheck);
-                    return;
-                }
-                chain.doFilter(request,response);
+            if(!ResultCode.OK.getCode().equals(object.getString("code"))){
+                logger.info("token disable,redirect to login page");
+                redirect(response,isAjax,jsonResult);
+                return;
             }
-
+            TokenInfo tokenInfo = JSONObject.parseObject(object.getString("data"),TokenInfo.class);
+            //查询用户信息
+            String userStr = this.tokenService.getLoginUserInfo(tokenInfo.getUserId());
+            JSONObject userObject = JSONObject.parseObject(userStr);
+            String tokenStr = userObject.getJSONObject("data").getString("loginToken");
+            if(!tokenStr.equals(tokenId)){
+                redirect(response,isAjax,jsonResult);
+                return;
+            }
+            //排除配置不包含的
+            //查询权限信息
+            String privilegeCheck = this.tokenService.checkLoginUserPrivilege(tokenInfo.getUserId(),"1",request.getRequestURI());
+            BaseRespDTO resultCheck = JSONObject.parseObject(privilegeCheck,BaseRespDTO.class);
+            if(EmptyChecker.isEmpty(resultCheck) || !ResultCode.OK.getCode().equals(resultCheck.getCode())){
+                redirect(response,isAjax,privilegeCheck);
+                return;
+            }
+            chain.doFilter(request,response);
         }catch (Exception e){
             logger.error("exception occurred in filter : {}",e);
             redirect(response,isAjax,new BaseRespDTO(ResultCode.ERROR).toString());

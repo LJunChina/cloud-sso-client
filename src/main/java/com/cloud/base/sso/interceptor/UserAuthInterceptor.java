@@ -91,6 +91,7 @@ public class UserAuthInterceptor extends BaseInterceptor {
                 LoginUserContext.addLoginUserContext(loginUser);
                 return true;
             }
+            redirect(response,isAjax,jsonResult);
             return false;
         }catch (UserAuthException e){
             logger.error("exception of login occurred in interceptor:{}",e);
