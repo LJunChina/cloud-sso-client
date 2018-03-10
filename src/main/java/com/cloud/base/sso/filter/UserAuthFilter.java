@@ -96,6 +96,9 @@ public class UserAuthFilter extends BaseFilter {
                 redirect(response,isAjax,privilegeCheck);
                 return;
             }
+            //刷新cookie
+            tokenCookie.setMaxAge(30 * 60);
+            response.addCookie(tokenCookie);
             chain.doFilter(request,response);
         }catch (Exception e){
             logger.error("exception occurred in filter : {}",e);
