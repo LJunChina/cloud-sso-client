@@ -90,6 +90,9 @@ public class UserAuthInterceptor extends BaseInterceptor {
                 loginUser.setUserId(tokenInfo.getUserId());
                 loginUser.setUserName(userObject.getJSONObject("data").getString("userName"));
                 LoginUserContext.addLoginUserContext(loginUser);
+                //刷新cookie
+                tokenCookie.setMaxAge(30 * 60);
+                response.addCookie(tokenCookie);
                 return true;
             }
             redirect(response,isAjax,jsonResult);

@@ -9,12 +9,14 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: "org.sonarqube"
 apply plugin: 'org.springframework.boot'
 
 group = 'com.cloud'
@@ -34,7 +36,7 @@ ext {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('com.cloud:common:1.0-SNAPSHOT')
+	compile('com.cloud:common:0.0.2-SNAPSHOT')
 }
 
 dependencyManagement {
@@ -49,7 +51,7 @@ uploadArchives {
 	repositories {
 		mavenDeployer {
 			pom.groupId = "com.cloud"
-			pom.version = "1.0-SNAPSHOT"
+			pom.version = "1.1-SNAPSHOT"
 			pom.artifactId = "cloud-sso-client"
 			pom.project {
 				name project.name
@@ -63,7 +65,7 @@ uploadArchives {
 				}
 			}
 			repository(url: "http://115.159.152.121:8080/nexus/content/repositories/thirdparty/") {
-				authentication(userName: "admin", password: "admin123")
+				authentication(userName: "admin", password: "CloudMaven123!@#")
 			}
 		}
 	}
@@ -76,6 +78,12 @@ task sourcesJar(type: Jar) {
 artifacts {
     archives jar
     archives sourcesJar
+}
+sonarqube{
+	properties{
+		property "sonar.projectName","cloud-sso-client"
+		property "sonar.sources","src\\main\\java"
+	}
 }
 
 
