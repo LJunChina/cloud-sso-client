@@ -92,6 +92,8 @@ public class UserAuthInterceptor extends BaseInterceptor {
                 LoginUserContext.addLoginUserContext(loginUser);
                 //刷新cookie
                 tokenCookie.setMaxAge(30 * 60);
+                tokenCookie.setDomain("joninfo.cn");
+                tokenCookie.setPath("/");
                 response.addCookie(tokenCookie);
                 return true;
             }

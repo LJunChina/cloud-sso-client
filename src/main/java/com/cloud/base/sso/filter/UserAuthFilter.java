@@ -61,7 +61,7 @@ public class UserAuthFilter extends BaseFilter {
             }
             String tokenId;
             Cookie tokenCookie = Stream.of(cookies)
-                    .filter(c -> "tokenId".equals(c.getName()) && "joninfo.cn".equalsIgnoreCase(c.getDomain()))
+                    .filter(c -> "tokenId".equals(c.getName()))
                     .findFirst()
                     .orElse(null);
             if(EmptyChecker.isEmpty(tokenCookie)){
