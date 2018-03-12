@@ -60,7 +60,10 @@ public class UserAuthFilter extends BaseFilter {
                 return;
             }
             String tokenId;
-            Cookie tokenCookie = Stream.of(cookies).filter(c -> "tokenId".equals(c.getName())).findFirst().orElse(null);
+            Cookie tokenCookie = Stream.of(cookies)
+                    .filter(c -> "tokenId".equals(c.getName()) && "joninfo.cn".equalsIgnoreCase(c.getDomain()))
+                    .findFirst()
+                    .orElse(null);
             if(EmptyChecker.isEmpty(tokenCookie)){
                 redirect(response,isAjax,jsonResult);
                 return;
@@ -98,6 +101,8 @@ public class UserAuthFilter extends BaseFilter {
             }
             //刷新cookie
             tokenCookie.setMaxAge(30 * 60);
+            tokenCookie.setDomain("joninfo.cn");
+            tokenCookie.setPath("/");
             response.addCookie(tokenCookie);
             chain.doFilter(request,response);
         }catch (Exception e){
