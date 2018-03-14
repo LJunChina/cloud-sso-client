@@ -99,6 +99,11 @@ public class UserAuthFilter extends BaseFilter {
                 redirect(response,isAjax,privilegeCheck);
                 return;
             }
+            //存储用户登录上下文
+            LoginUser loginUser = new LoginUser();
+            loginUser.setUserId(tokenInfo.getUserId());
+            loginUser.setUserName(userObject.getJSONObject("data").getString("userName"));
+            LoginUserContext.addLoginUserContext(loginUser);
             //刷新cookie
             tokenCookie.setMaxAge(30 * 60);
             tokenCookie.setDomain("joninfo.cn");
@@ -108,6 +113,8 @@ public class UserAuthFilter extends BaseFilter {
         }catch (Exception e){
             logger.error("exception occurred in filter : {}",e);
             redirect(response,isAjax,new BaseRespDTO(ResultCode.ERROR).toString());
+        }finally {
+            LoginUserContext.removeCurrentLoginUser();
         }
     }
 
